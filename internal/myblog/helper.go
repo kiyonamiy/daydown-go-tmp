@@ -6,11 +6,11 @@
 package myblog
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 
+	"github.com/kiyonamiy/myblog/internal/pkg/log"
 	"github.com/kjzz/viper"
 	"github.com/spf13/cobra"
 )
@@ -59,9 +59,20 @@ func initConfig() {
 	// 读取配置文件。如果指定了配置文件名，则使用指定的配置文件，否则在注册的搜索路径中搜索
 	err := viper.ReadInConfig()
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		log.Errorw("Failed to read viper configuration file", "err", err)
 	} else {
-		// 打印 viper 当前使用的配置文件，方便 Debug.
-		fmt.Fprintln(os.Stdout, "Using config file:", viper.ConfigFileUsed())
+		// 打印 viper 当前使用的配置文件，方便 Debug。
+		log.Infow("Using config file", "file", viper.ConfigFileUsed())
+	}
+}
+
+// logOptions 从 viper 中读取日志配置，构建 `*log.Options` 并返回。
+func logOptions() *log.Options {
+	return &log.Options{
+		DisableCaller:     viper.GetBool("log.disable-caller"),
+		DisableStacktrace: viper.GetBool("log.disable-stacktrace"),
+		Level:             viper.GetString("log.level"),
+		Format:            viper.GetString("log.format"),
+		OutputPaths:       viper.GetStringSlice("log.output-paths"),
 	}
 }

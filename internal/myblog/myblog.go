@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/kiyonamiy/myblog/internal/pkg/log"
 	"github.com/kjzz/viper"
 	"github.com/spf13/cobra"
 )
@@ -27,6 +28,8 @@ https://github.com/kiyonamiy/myblog`,
 		SilenceUsage: true,
 		// 指定调用 cmd.Execute() 时，执行的 Run 函数
 		RunE: func(cmd *cobra.Command, args []string) error {
+			log.Init(logOptions())
+			defer log.Sync() // Sync 将缓存中的日志刷新到磁盘文件中
 			return run()
 		},
 		// 这里设置命令运行时，不需要指定命令行参数（例如执行 `_output/myblog test`，会抛错；执行 `_output/myblog -x` 会报“Error: unknown shorthand flag: 'x' in -x”，说明 tag 不属于 args）
@@ -56,8 +59,8 @@ https://github.com/kiyonamiy/myblog`,
 func run() error {
 	// 打印所有的配置项及其值
 	settings, _ := json.Marshal(viper.AllSettings())
-	fmt.Println(string(settings))
+	log.Infow(string(settings))
 	// 打印 db -> username 配置项的值
-	fmt.Println(viper.GetString("db.username"))
+	log.Infow(viper.GetString("db.username"))
 	return nil
 }
