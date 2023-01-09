@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<!--
+ Copyright 2022 Innkeeper kiyonamiy <yuqingbo0122@gmail.com>. All rights reserved.
+ Use of this source code is governed by a MIT style
+ license that can be found in the LICENSE file. The original repo for
+ this file is https://github.com/kiyonamiy/myblog.
+-->
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p>hello world</p>
+</body>
+<script>
+    console.log("hello world");
+    fetch("https://127.0.0.1:8445/healthz").then((result) => {
+        console.log("==== fetch https://127.0.0.1:8080/healthz");
+        console.log(result);
+    })
+</script>
+</html>
