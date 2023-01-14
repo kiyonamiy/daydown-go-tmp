@@ -6,9 +6,11 @@
 package myblog
 
 import (
-	"encoding/json"
+	"errors"
 	"fmt"
+	"net/http"
 
+	"github.com/gin-gonic/gin"
 	"github.com/kiyonamiy/myblog/internal/pkg/log"
 	"github.com/kiyonamiy/myblog/pkg/version/verflag"
 	"github.com/kjzz/viper"
@@ -64,10 +66,26 @@ https://github.com/kiyonamiy/myblog`,
 
 // run 函数是实际的业务代码入口函数.
 func run() error {
-	// 打印所有的配置项及其值
-	settings, _ := json.Marshal(viper.AllSettings())
-	log.Infow(string(settings))
-	// 打印 db -> username 配置项的值
-	log.Infow(viper.GetString("db.username"))
+	gin.SetMode(viper.GetString("runmode"))
+
+	g := gin.New()
+
+	g.NoRoute(func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{"code": 10003, "message": "Page not found."})
+	})
+
+	g.GET("/healthz", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{"status": "ok"})
+	})
+
+	httpsrv := &http.Server{Addr: viper.GetString("addr"), Handler: g}
+
+	// 运行 HTTP 服务器
+	// 打印一条日志，用来提示 HTTP 服务已经起来，方便排障
+	log.Infow("Start to listening the incoming requests on http address", "addr", viper.GetString("addr"))
+	if err := httpsrv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		log.Fatalw(err.Error())
+	}
+
 	return nil
 }
