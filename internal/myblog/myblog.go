@@ -16,6 +16,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/kiyonamiy/myblog/internal/pkg/core"
+	"github.com/kiyonamiy/myblog/internal/pkg/errno"
 	"github.com/kiyonamiy/myblog/internal/pkg/log"
 	mw "github.com/kiyonamiy/myblog/internal/pkg/middleware"
 	"github.com/kiyonamiy/myblog/pkg/version/verflag"
@@ -80,11 +82,13 @@ func run() error {
 	g.Use(gin.Recovery(), mw.NoCache, mw.Cors, mw.Secure, mw.RequestID())
 
 	g.NoRoute(func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{"code": 10003, "message": "Page not found."})
+		core.WriteResponse(ctx, errno.ErrPageNotFound, nil)
 	})
 
 	g.GET("/healthz", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{"status": "ok"})
+		log.C(ctx).Infow("Healthz function called")
+
+		core.WriteResponse(ctx, nil, map[string]string{"status": "ok"})
 	})
 
 	httpsrv := &http.Server{Addr: viper.GetString("addr"), Handler: g}
