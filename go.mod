@@ -46,6 +46,7 @@ require (
 )
 
 require (
+	github.com/google/uuid v1.3.0
 	github.com/gosuri/uitable v0.0.4
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
 	github.com/kjzz/viper v1.3.7
