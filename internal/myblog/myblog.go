@@ -16,8 +16,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kiyonamiy/myblog/internal/pkg/core"
-	"github.com/kiyonamiy/myblog/internal/pkg/errno"
 	"github.com/kiyonamiy/myblog/internal/pkg/log"
 	mw "github.com/kiyonamiy/myblog/internal/pkg/middleware"
 	"github.com/kiyonamiy/myblog/pkg/version/verflag"
@@ -75,21 +73,20 @@ https://github.com/kiyonamiy/myblog`,
 
 // run 函数是实际的业务代码入口函数.
 func run() error {
+
+	if err := initStore(); err != nil {
+		return err
+	}
+
 	gin.SetMode(viper.GetString("runmode"))
 
 	g := gin.New()
 
 	g.Use(gin.Recovery(), mw.NoCache, mw.Cors, mw.Secure, mw.RequestID())
 
-	g.NoRoute(func(ctx *gin.Context) {
-		core.WriteResponse(ctx, errno.ErrPageNotFound, nil)
-	})
-
-	g.GET("/healthz", func(ctx *gin.Context) {
-		log.C(ctx).Infow("Healthz function called")
-
-		core.WriteResponse(ctx, nil, map[string]string{"status": "ok"})
-	})
+	if err := installRouters(g); err != nil {
+		return err
+	}
 
 	httpsrv := &http.Server{Addr: viper.GetString("addr"), Handler: g}
 
