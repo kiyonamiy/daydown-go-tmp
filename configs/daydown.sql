@@ -1,11 +1,11 @@
 -- Copyright 2022 Innkeeper kiyonamiy <yuqingbo0122@gmail.com>. All rights reserved.
 -- Use of this source code is governed by a MIT style
 -- license that can be found in the LICENSE file. The original repo for
--- this file is https://github.com/kiyonamiy/myblog.
+-- this file is https://github.com/kiyonamiy/daydown.
 
 -- MySQL dump 10.13  Distrib 8.0.32, for macos13.0 (arm64)
 --
--- Host: 127.0.0.1    Database: myblog
+-- Host: 127.0.0.1    Database: daydown
 -- ------------------------------------------------------
 -- Server version	8.0.32
 
@@ -21,14 +21,14 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Current Database: `myblog`
+-- Current Database: `daydown`
 --
 
-/*!40000 DROP DATABASE IF EXISTS `myblog`*/;
+/*!40000 DROP DATABASE IF EXISTS `daydown`*/;
 
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `myblog` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `daydown` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 
-USE `myblog`;
+USE `daydown`;
 
 --
 -- Table structure for table `post`

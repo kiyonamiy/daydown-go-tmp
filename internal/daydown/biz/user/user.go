@@ -1,7 +1,7 @@
 // Copyright 2022 Innkeeper kiyonamiy <yuqingbo0122@gmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/kiyonamiy/myblog.
+// this file is https://github.com/kiyonamiy/daydown.
 
 package user
 
@@ -10,10 +10,10 @@ import (
 	"regexp"
 
 	"github.com/jinzhu/copier"
-	"github.com/kiyonamiy/myblog/internal/myblog/store"
-	v1 "github.com/kiyonamiy/myblog/internal/pkg/api/myblog/v1"
-	"github.com/kiyonamiy/myblog/internal/pkg/errno"
-	"github.com/kiyonamiy/myblog/internal/pkg/model"
+	"github.com/kiyonamiy/daydown/internal/daydown/store"
+	v1 "github.com/kiyonamiy/daydown/internal/pkg/api/daydown/v1"
+	"github.com/kiyonamiy/daydown/internal/pkg/errno"
+	"github.com/kiyonamiy/daydown/internal/pkg/model"
 )
 
 type UserBiz interface {

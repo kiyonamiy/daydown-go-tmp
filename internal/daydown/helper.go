@@ -1,28 +1,28 @@
 // Copyright 2022 Innkeeper kiyonamiy <yuqingbo0122@gmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/kiyonamiy/myblog.
+// this file is https://github.com/kiyonamiy/daydown.
 
-package myblog
+package daydown
 
 import (
 	"os"
 	"path/filepath"
 	"strings"
 
-	"github.com/kiyonamiy/myblog/internal/myblog/store"
-	"github.com/kiyonamiy/myblog/internal/pkg/log"
-	"github.com/kiyonamiy/myblog/pkg/db"
+	"github.com/kiyonamiy/daydown/internal/daydown/store"
+	"github.com/kiyonamiy/daydown/internal/pkg/log"
+	"github.com/kiyonamiy/daydown/pkg/db"
 	"github.com/kjzz/viper"
 	"github.com/spf13/cobra"
 )
 
 const (
-	// recommendedHomeDir 定义放置 myblog 服务配置的默认目录.
-	recommendedHomeDir = ".myblog"
+	// recommendedHomeDir 定义放置 daydown 服务配置的默认目录.
+	recommendedHomeDir = ".daydown"
 
-	// defaultConfigName 指定了 myblog 服务的默认配置文件名.
-	defaultConfigName = "myblog.yaml"
+	// defaultConfigName 指定了 daydown 服务的默认配置文件名.
+	defaultConfigName = "daydown.yaml"
 )
 
 func initConfig() {
@@ -51,8 +51,8 @@ func initConfig() {
 	// 读取匹配的环境变量
 	viper.AutomaticEnv()
 
-	// 读取环境变量的前缀为 MYBLOG，如果是 myblog，将自动转变为大写。
-	viper.SetEnvPrefix("MYBLOG")
+	// 读取环境变量的前缀为 DAYDOWN，如果是 daydown，将自动转变为大写。
+	viper.SetEnvPrefix("DAYDOWN")
 
 	// 以下 2 行，将 viper.Get(key) key 字符串中 '.' 和 '-' 替换为 '_'
 	replacer := strings.NewReplacer(".", "_")

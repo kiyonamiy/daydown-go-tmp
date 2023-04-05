@@ -1,4 +1,4 @@
-module github.com/kiyonamiy/myblog
+module github.com/kiyonamiy/daydown
 
 go 1.18
 

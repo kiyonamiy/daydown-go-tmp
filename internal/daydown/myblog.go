@@ -1,9 +1,9 @@
 // Copyright 2022 Innkeeper kiyonamiy <yuqingbo0122@gmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/kiyonamiy/myblog.
+// this file is https://github.com/kiyonamiy/daydown.
 
-package myblog
+package daydown
 
 import (
 	"context"
@@ -16,9 +16,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kiyonamiy/myblog/internal/pkg/log"
-	mw "github.com/kiyonamiy/myblog/internal/pkg/middleware"
-	"github.com/kiyonamiy/myblog/pkg/version/verflag"
+	"github.com/kiyonamiy/daydown/internal/pkg/log"
+	mw "github.com/kiyonamiy/daydown/internal/pkg/middleware"
+	"github.com/kiyonamiy/daydown/pkg/version/verflag"
 
 	"github.com/kjzz/viper"
 	"github.com/spf13/cobra"
@@ -26,14 +26,14 @@ import (
 
 var cfgFile string
 
-func NewMyBlogCommand() *cobra.Command {
+func NewCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "myblog",
-		Short: "My little blog",
-		Long: `My little blog.
+		Use:   "daydown",
+		Short: "record every day",
+		Long: `Record every day using daydown.
 		
-Find more myblog information at:
-https://github.com/kiyonamiy/myblog`,
+Find more daydown information at:
+https://github.com/kiyonamiy/daydown`,
 		// 命令出错时，不打印帮助信息。不需要打印帮助信息，设置为 true 可以保持命令出错时一眼就能看到错误信息
 		SilenceUsage: true,
 		// 指定调用 cmd.Execute() 时，执行的 Run 函数
@@ -45,7 +45,7 @@ https://github.com/kiyonamiy/myblog`,
 			defer log.Sync() // Sync 将缓存中的日志刷新到磁盘文件中
 			return run()
 		},
-		// 这里设置命令运行时，不需要指定命令行参数（例如执行 `_output/myblog test`，会抛错；执行 `_output/myblog -x` 会报“Error: unknown shorthand flag: 'x' in -x”，说明 tag 不属于 args）
+		// 这里设置命令运行时，不需要指定命令行参数（例如执行 `_output/daydown test`，会抛错；执行 `_output/daydown -x` 会报“Error: unknown shorthand flag: 'x' in -x”，说明 tag 不属于 args）
 		Args: func(cmd *cobra.Command, args []string) error {
 			for _, arg := range args {
 				if len(arg) > 0 {
@@ -60,7 +60,7 @@ https://github.com/kiyonamiy/myblog`,
 	cobra.OnInitialize(initConfig)
 
 	// Cobra 支持持久性标志(PersistentFlag)，该标志可用于它所分配的命令以及该命令下的每个子命令
-	cmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "The path to the myblog configuration file. Empty string for no configuration file.")
+	cmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "The path to the daydown configuration file. Empty string for no configuration file.")
 
 	// Cobra 也支持本地标志，本地标志只能在其所绑定的命令上使用
 	cmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
