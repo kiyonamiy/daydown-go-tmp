@@ -13,6 +13,7 @@ import (
 	"github.com/kiyonamiy/daydown/internal/pkg/errno"
 	"github.com/kiyonamiy/daydown/internal/pkg/log"
 	"github.com/kiyonamiy/daydown/internal/pkg/middleware"
+	"github.com/kiyonamiy/daydown/pkg/auth"
 )
 
 func installRouters(g *gin.Engine) error {
@@ -26,7 +27,12 @@ func installRouters(g *gin.Engine) error {
 		core.WriteResponse(ctx, nil, map[string]string{"status": "ok"})
 	})
 
-	uc := user.New(store.S)
+	authz, err := auth.NewAuthz(store.S.DB())
+	if err != nil {
+		return err
+	}
+
+	uc := user.New(store.S, authz)
 
 	g.POST("/login", uc.Login)
 
@@ -38,7 +44,8 @@ func installRouters(g *gin.Engine) error {
 		{
 			userv1.POST("", uc.Create)
 			userv1.PUT(":name/change-password", uc.ChangePassword)
-			userv1.Use(middleware.Authn())
+			userv1.Use(middleware.Authn(), middleware.Authz(authz))
+			userv1.GET(":name", uc.Get) // 获取用户详情
 		}
 	}
 

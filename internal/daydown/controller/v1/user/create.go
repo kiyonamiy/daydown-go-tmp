@@ -14,6 +14,8 @@ import (
 	v1 "github.com/kiyonamiy/daydown/pkg/api/daydown/v1"
 )
 
+const defaultMethods = "(GET)|(POST)|(PUT)|(DELETE)"
+
 func (ctrl *UserController) Create(ctx *gin.Context) {
 	// 在 Controller 层实现有限的功能（参数解析、校验、逻辑分发、请求聚合和返回）
 	log.C(ctx).Infow("Create user function called")
@@ -30,6 +32,12 @@ func (ctrl *UserController) Create(ctx *gin.Context) {
 	}
 
 	if err := ctrl.b.Users().Create(ctx, &r); err != nil {
+		core.WriteResponse(ctx, err, nil)
+		return
+	}
+
+	// 添加授权信息
+	if _, err := ctrl.a.AddNamedPolicy("p", r.Username, "/v1/users/"+r.Username, defaultMethods); err != nil {
 		core.WriteResponse(ctx, err, nil)
 		return
 	}

@@ -7,6 +7,7 @@ package user
 
 import (
 	"context"
+	"errors"
 	"regexp"
 
 	"github.com/jinzhu/copier"
@@ -16,12 +17,14 @@ import (
 	v1 "github.com/kiyonamiy/daydown/pkg/api/daydown/v1"
 	"github.com/kiyonamiy/daydown/pkg/auth"
 	"github.com/kiyonamiy/daydown/pkg/token"
+	"gorm.io/gorm"
 )
 
 type UserBiz interface {
 	ChangePassword(ctx context.Context, username string, r *v1.ChangePasswordRequest) error
 	Login(ctx context.Context, r *v1.LoginRequest) (*v1.LoginResponse, error)
 	Create(ctx context.Context, r *v1.CreateUserRequest) error
+	Get(ctx context.Context, username string) (*v1.GetUserResponse, error)
 }
 
 type userBiz struct {
@@ -76,11 +79,11 @@ func (b *userBiz) Login(ctx context.Context, r *v1.LoginRequest) (*v1.LoginRespo
 	return &v1.LoginResponse{Token: t}, nil
 }
 
-func (biz *userBiz) Create(ctx context.Context, r *v1.CreateUserRequest) error {
+func (b *userBiz) Create(ctx context.Context, r *v1.CreateUserRequest) error {
 	var userM model.UserM
 	_ = copier.Copy(&userM, r)
 
-	if err := biz.store.Users().Create(ctx, &userM); err != nil {
+	if err := b.store.Users().Create(ctx, &userM); err != nil {
 		if match, _ := regexp.MatchString("Duplicate entry '.*' for key 'username'", err.Error()); match {
 			return errno.ErrUserAlreadyExist
 		}
@@ -89,4 +92,24 @@ func (biz *userBiz) Create(ctx context.Context, r *v1.CreateUserRequest) error {
 	}
 
 	return nil
+}
+
+// Get 是 UserBiz 接口中 `Get` 方法的实现.
+func (b *userBiz) Get(ctx context.Context, username string) (*v1.GetUserResponse, error) {
+	user, err := b.store.Users().Get(ctx, username)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errno.ErrUserNotFound
+		}
+
+		return nil, err
+	}
+
+	var resp v1.GetUserResponse
+	_ = copier.Copy(&resp, user)
+
+	resp.CreatedAt = user.CreatedAt.Format("2006-01-02 15:04:05")
+	resp.UpdatedAt = user.UpdatedAt.Format("2006-01-02 15:04:05")
+
+	return &resp, nil
 }

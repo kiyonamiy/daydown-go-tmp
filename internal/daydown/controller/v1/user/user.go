@@ -8,12 +8,14 @@ package user
 import (
 	"github.com/kiyonamiy/daydown/internal/daydown/biz"
 	"github.com/kiyonamiy/daydown/internal/daydown/store"
+	"github.com/kiyonamiy/daydown/pkg/auth"
 )
 
 type UserController struct {
+	a *auth.Authz
 	b biz.IBiz
 }
 
-func New(ds store.IStore) *UserController {
-	return &UserController{b: biz.NewBiz(ds)}
+func New(ds store.IStore, a *auth.Authz) *UserController {
+	return &UserController{a: a, b: biz.NewBiz(ds)}
 }
