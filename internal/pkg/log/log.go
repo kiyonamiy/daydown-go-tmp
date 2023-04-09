@@ -1,7 +1,7 @@
 // Copyright 2022 Innkeeper kiyonamiy <yuqingbo0122@gmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/kiyonamiy/myblog.
+// this file is https://github.com/kiyonamiy/daydown.
 
 package log
 
@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/kiyonamiy/myblog/internal/pkg/known"
+	"github.com/kiyonamiy/daydown/internal/pkg/known"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -77,7 +77,7 @@ func NewLogger(opts *Options) *zapLogger {
 
 	// 创建构建 zap.Logger 需要的配置
 	cfg := &zap.Config{
-		// 是否在日志中显示调用日志所在的文件和行号，例如：`"caller":"miniblog/miniblog.go:75"`
+		// 是否在日志中显示调用日志所在的文件和行号，例如：`"caller":"daydown/daydown.go:75"`
 		DisableCaller: opts.DisableCaller,
 		// 是否禁止在 panic 及以上级别打印堆栈信息
 		DisableStacktrace: opts.DisableStacktrace,
@@ -176,6 +176,10 @@ func (l *zapLogger) C(ctx context.Context) *zapLogger {
 
 	if requestID := ctx.Value(known.XRequestIDKey); requestID != nil {
 		lc.z = lc.z.With(zap.Any(known.XRequestIDKey, requestID))
+	}
+
+	if userID := ctx.Value(known.XUsernameKey); userID != nil {
+		lc.z = lc.z.With(zap.Any(known.XUsernameKey, userID))
 	}
 
 	return lc

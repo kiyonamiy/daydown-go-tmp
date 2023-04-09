@@ -1,7 +1,7 @@
 // Copyright 2022 Innkeeper kiyonamiy <yuqingbo0122@gmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/kiyonamiy/myblog.
+// this file is https://github.com/kiyonamiy/daydown.
 
 package store
 
@@ -17,6 +17,7 @@ var (
 )
 
 type IStore interface {
+	DB() *gorm.DB
 	Users() UserStore
 }
 
@@ -32,6 +33,11 @@ func NewStore(db *gorm.DB) *datastore {
 	})
 
 	return S
+}
+
+// DB 返回存储在 datastore 中的 *gorm.DB.
+func (ds *datastore) DB() *gorm.DB {
+	return ds.db
 }
 
 func (ds *datastore) Users() UserStore {

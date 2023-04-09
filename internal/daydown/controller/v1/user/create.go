@@ -1,18 +1,20 @@
 // Copyright 2022 Innkeeper kiyonamiy <yuqingbo0122@gmail.com>. All rights reserved.
 // Use of this source code is governed by a MIT style
 // license that can be found in the LICENSE file. The original repo for
-// this file is https://github.com/kiyonamiy/myblog.
+// this file is https://github.com/kiyonamiy/daydown.
 
 package user
 
 import (
 	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
-	v1 "github.com/kiyonamiy/myblog/internal/pkg/api/myblog/v1"
-	"github.com/kiyonamiy/myblog/internal/pkg/core"
-	"github.com/kiyonamiy/myblog/internal/pkg/errno"
-	"github.com/kiyonamiy/myblog/internal/pkg/log"
+	"github.com/kiyonamiy/daydown/internal/pkg/core"
+	"github.com/kiyonamiy/daydown/internal/pkg/errno"
+	"github.com/kiyonamiy/daydown/internal/pkg/log"
+	v1 "github.com/kiyonamiy/daydown/pkg/api/daydown/v1"
 )
+
+const defaultMethods = "(GET)|(POST)|(PUT)|(DELETE)"
 
 func (ctrl *UserController) Create(ctx *gin.Context) {
 	// 在 Controller 层实现有限的功能（参数解析、校验、逻辑分发、请求聚合和返回）
@@ -30,6 +32,12 @@ func (ctrl *UserController) Create(ctx *gin.Context) {
 	}
 
 	if err := ctrl.b.Users().Create(ctx, &r); err != nil {
+		core.WriteResponse(ctx, err, nil)
+		return
+	}
+
+	// 添加授权信息
+	if _, err := ctrl.a.AddNamedPolicy("p", r.Username, "/v1/users/"+r.Username, defaultMethods); err != nil {
 		core.WriteResponse(ctx, err, nil)
 		return
 	}
